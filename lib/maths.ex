@@ -41,10 +41,10 @@ defmodule Maths do
     IO.puts("the power of #{a} to #{b} is #{:math.pow(a, b)}")
   end
 
-  def test_alias_local do
+  def alias_local(x) do
     alias Shout
     IO.puts("Voici ce que donne le alis local: ")
-    IO.puts Shout.uppercase("françois")
+    IO.puts Shout.uppercase(x)
 
   end
 end
@@ -56,4 +56,4 @@ Maths.substract(5, 10)
 Maths.divide(7, 2)
 Maths.modulo(7, 2)
 Maths.p(2, 3)
-Maths.test_alias_local()
+Maths.alias_local("france")
