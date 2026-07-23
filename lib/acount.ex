@@ -39,4 +39,11 @@ defmodule Account do
     end
   end
 
+  def credit({:success, user}, amount) when is_integer(amount) and amount > 0 do
+    updated_balance = user.balance_atomic + amount
+    updated_user = %{user | balance_atomic: updated_balance}
+    user_info = {:success, updated_user}
+    IO.inspect(user_info)
+  end
+
 end
