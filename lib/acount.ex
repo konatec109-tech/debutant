@@ -1,5 +1,4 @@
 defmodule Account do
-  import Matching
   def register_user do
     name = IO.gets("Enter your name: ") |> String.trim()
     age = verify_age()
@@ -39,11 +38,31 @@ defmodule Account do
     end
   end
 
+  @type user :: %{name: String.t(), age: integer(), phone: String.t(), balance_atomic: integer()}
   def credit({:success, user}, amount) when is_integer(amount) and amount > 0 do
     updated_balance = user.balance_atomic + amount
     updated_user = %{user | balance_atomic: updated_balance}
     user_info = {:success, updated_user}
     IO.inspect(user_info)
+  end
+
+  def debit({:success, user}, amount) when is_integer(amount) and amount > 0 do
+    case user.balance_atomic do
+      balance when balance >= amount ->
+        updated_balance = user.balance_atomic - amount
+        updated_user = %{user | balance_atomic: updated_balance}
+        case updated_user.balance_atomic do
+          balance when balance <= 1000 ->
+            IO.puts("Warning: Your balance is low. Please consider depositing more funds.")
+        end
+        user_info = {:success, updated_user}
+        IO.inspect(user_info)
+
+      balance when balance < amount ->
+        {:error, "Insufficient funds. Your current balance is #{balance}."}
+
+
+    end
   end
 
 end
