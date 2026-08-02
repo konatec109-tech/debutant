@@ -51,12 +51,15 @@ defmodule Account do
       balance when balance >= amount ->
         updated_balance = user.balance_atomic - amount
         updated_user = %{user | balance_atomic: updated_balance}
+
+
         case updated_user.balance_atomic do
           balance when balance <= 1000 ->
-            IO.puts("Warning: Your balance is low. Please consider depositing more funds.")
+            {:error, "Warning: Your balance is low. Your current balance is #{balance}."}
         end
         user_info = {:success, updated_user}
         IO.inspect(user_info)
+
 
       balance when balance < amount ->
         {:error, "Insufficient funds. Your current balance is #{balance}."}
