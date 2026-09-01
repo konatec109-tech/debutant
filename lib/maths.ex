@@ -44,7 +44,7 @@ defmodule Maths do
   def alias_local(x) do
     alias Shout
     IO.puts("Voici ce que donne le alis local: ")
-    IO.puts Shout.uppercase(x)
+    Shout.uppercase(x)
 
   end
 end
