@@ -4,8 +4,8 @@ defmodule Account do
     age = verify_age()
     phone = verify_phone()
     IO.puts("User registered successfully!")
-    user_info = {:success, %{name: name, age: age, phone: phone, balance_atomic: 50000}}
-    IO.inspect(user_info)
+    user_info = %{name: name, age: age, phone: phone, balance_atomic: 50000}
+    {:success, user_info}
 
   end
   defp verify_phone do
@@ -39,26 +39,24 @@ defmodule Account do
   end
 
   @type user :: %{name: String.t(), age: integer(), phone: String.t(), balance_atomic: integer()}
-  def credit({:success, user}, amount) when is_integer(amount) and amount > 0 do
-    updated_balance = user.balance_atomic + amount
-    updated_user = %{user | balance_atomic: updated_balance}
-    user_info = {:success, updated_user}
-    IO.inspect(user_info)
+  def credit(user_info, amount) when is_integer(amount) and amount > 0 do
+    updated_balance = user_info.balance_atomic + amount
+    updated_user = %{user_info | balance_atomic: updated_balance}
+    {:success, updated_user}
   end
 
-  def debit({:success, user}, amount) when is_integer(amount) and amount > 0 do
-    case user.balance_atomic do
+  def debit(user_info, amount) when is_integer(amount) and amount > 0 do
+    case user_info.balance_atomic do
       balance when balance >= amount ->
-        updated_balance = user.balance_atomic - amount
-        updated_user = %{user | balance_atomic: updated_balance}
+        updated_balance = user_info.balance_atomic - amount
+        updated_user = %{user_info | balance_atomic: updated_balance}
 
 
-        case updated_user.balance_atomic do
-          balance when balance <= 1000 ->
-            {:error, "Warning: Your balance is low. Your current balance is #{balance}."}
+          if balance <= 1000 do
+            IO.puts("Warning: Your balance is low. Your current balance is #{balance}.")
         end
-        user_info = {:success, updated_user}
-        IO.inspect(user_info)
+        {:success, updated_user}
+
 
 
       balance when balance < amount ->
