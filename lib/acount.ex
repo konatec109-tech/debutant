@@ -43,6 +43,7 @@ defmodule Account do
     updated_balance = user_info.balance_atomic + amount
     updated_user = %{user_info | balance_atomic: updated_balance}
     {:success, updated_user}
+
   end
 
   def debit(user_info, amount) when is_integer(amount) and amount > 0 do
