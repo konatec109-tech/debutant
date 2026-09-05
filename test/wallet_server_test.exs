@@ -27,4 +27,11 @@ defmodule WalletServerTest do
     solde = get_balance(pid)
     assert solde == 20000
   end
+
+  test "test debit with insufficient balance" do
+    user_test = %{name: "ibrahim", age: 22, phone: "0704102697", balance_atomic: 50000}
+    pid = start_supervised!({WalletServer, user_test})
+    assert debit_proccess(pid, 80000) == {:error, :insufficient_funds}
+    assert get_balance(pid) == 50000
+  end
 end

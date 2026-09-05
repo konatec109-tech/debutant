@@ -61,7 +61,7 @@ defmodule Account do
 
 
       balance when balance < amount ->
-        {:error, "Insufficient funds. Your current balance is #{balance}."}
+        {:error, :insufficient_funds}
 
 
     end
