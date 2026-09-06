@@ -1,4 +1,15 @@
 defmodule Account do
+  use Ecto.Schema
+  import Ecto.Changeset
+
+  schema "accounts" do
+    field :name, :string
+    field :phone, :string
+    field :balance_atomic, :integer
+    timestamps()
+  end
+
+
   def register_user do
     name = IO.gets("Enter your name: ") |> String.trim()
     age = verify_age()
@@ -8,6 +19,19 @@ defmodule Account do
     {:success, user_info}
 
   end
+
+  def changeset(account, attrs) do
+    account
+    |> cast(attrs, [:name, :phone, :balance_atomic])
+    |> validate_required([:name, :phone, :balance_atomic])
+    |> validate_format(:phone, ~r/^\d{10}$/, message: "phone must be a valid 10-digit number")
+    |> validate_number(:balance_atomic, greater_than_or_equal_to: 0)
+  end
+
+
+
+
+
   defp verify_phone do
     phone = IO.gets("Enter your phone Number: ") |> String.trim()
     if phone =~ ~r/^\d{10}$/ do

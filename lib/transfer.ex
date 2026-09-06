@@ -1,13 +1,34 @@
 defmodule Send do
-    import Account
-    def transfer(from, to, amount) do
-        with {:success, updated_from} <- debit(from, amount),
-             {:success, updated_to} <- credit(to, amount) do
+  import Account, only: [debit: 2, credit: 2]
+  alias Learning.Repo
+  alias Account
 
-          transactions = %{id: 1, type: :transfert, amount: amount, from: updated_from.balance_atomic, to: updated_to.balance_atomic, status: :success}
-          {:success, transactions}
-        else
-          {:error, reason} -> {:error, "Transfer failed: #{reason}"}
-        end
-    end
+  def transfer_fund(sender_id, receiver_id, amount) do
+    Repo.transaction(fn ->
+      sender = Repo.get!(Account, sender_id)
+      receiver = Repo.get!(Account, receiver_id)
+
+      with {:success, debited_sender} <- debit(sender, amount),
+           {:success, credited_receiver} <- credit(receiver, amount) do
+
+
+          sender_changeset = Account.changeset(sender, %{balance_atomic: debited_sender.balance_atomic})
+          receiver_changeset = Account.changeset(receiver, %{balance_atomic: credited_receiver.balance_atomic})
+
+          Repo.update!(sender_changeset)
+          Repo.update!(receiver_changeset)
+
+          %{type: :transfer, amount: amount, status: :success}
+      else
+
+        {:error, reason} ->
+          Repo.rollback(reason)
+
+
+      end
+
+
+    end)
+
+  end
 end
