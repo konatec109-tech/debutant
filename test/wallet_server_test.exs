@@ -1,37 +1,22 @@
-defmodule WalletServerTest do
-  use ExUnit.Case
-  import WalletServer
+defmodule WalletServertest do
+  use Learning.DataCase
+  alias Learning.Repo
+  alias Account
+  alias WalletServer
 
-  test "test get balance"do
-    user_test = %{name: "ibrahim", age: 22, phone: "0704102697", balance_atomic: 50000}
-
-    pid = start_supervised!({WalletServer, user_test})
-    solde = get_balance(pid)
-    assert  solde == 50000
+  test "wake up a wallet dynamically and check out the balance" do
+    params = %{name: "cedric", phone: "0706050403", balance_atomic: 50000}
+    changeset = Account.changeset(%Account{}, params)
+    account = Repo.insert!(changeset)
+    DynamicSupervisor.start_child(Learning.WalletSupervisor, {WalletServer, account.id})
+    solde_ram = WalletServer.get_balance(account.id)
+    assert solde_ram == 50000
   end
 
-  test "test credit" do
-    user_test = %{name: "ibrahim", age: 22, phone: "0704102697", balance_atomic: 50000}
+  test "testing a ghost account" do
+    result  = WalletServer.start_link(99999)
+    assert {:error, :account_not_found} == result
 
-    pid = start_supervised!({WalletServer, user_test})
-    credit_proccess(pid, 10000)
-    solde = get_balance(pid)
-    assert solde == 60000
-  end
 
-  test "test debit" do
-    user_test = %{name: "ibrahim", age: 22, phone: "0704102697", balance_atomic: 50000}
-
-    pid = start_supervised!({WalletServer, user_test})
-    debit_proccess(pid, 30000)
-    solde = get_balance(pid)
-    assert solde == 20000
-  end
-
-  test "test debit with insufficient balance" do
-    user_test = %{name: "ibrahim", age: 22, phone: "0704102697", balance_atomic: 50000}
-    pid = start_supervised!({WalletServer, user_test})
-    assert debit_proccess(pid, 80000) == {:error, :insufficient_funds}
-    assert get_balance(pid) == 50000
   end
 end

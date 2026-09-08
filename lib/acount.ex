@@ -9,7 +9,6 @@ defmodule Account do
     timestamps()
   end
 
-
   def register_user do
     name = IO.gets("Enter your name: ") |> String.trim()
     age = verify_age()
@@ -27,9 +26,6 @@ defmodule Account do
     |> validate_format(:phone, ~r/^\d{10}$/, message: "phone must be a valid 10-digit number")
     |> validate_number(:balance_atomic, greater_than_or_equal_to: 0)
   end
-
-
-
 
 
   defp verify_phone do
@@ -67,27 +63,21 @@ defmodule Account do
     updated_balance = user_info.balance_atomic + amount
     updated_user = %{user_info | balance_atomic: updated_balance}
     {:success, updated_user}
-
   end
+
 
   def debit(user_info, amount) when is_integer(amount) and amount > 0 do
     case user_info.balance_atomic do
       balance when balance >= amount ->
         updated_balance = user_info.balance_atomic - amount
         updated_user = %{user_info | balance_atomic: updated_balance}
-
-
-          if balance <= 1000 do
+        if balance <= 1000 do
             IO.puts("Warning: Your balance is low. Your current balance is #{balance}.")
         end
         {:success, updated_user}
 
-
-
       balance when balance < amount ->
         {:error, :insufficient_funds}
-
-
     end
   end
 

@@ -5,7 +5,13 @@ defmodule WalletServer do
 
 
   def start_link(account_id) do
-    GenServer.start_link(__MODULE__, account_id, name: via_tuple(account_id))
+    case Repo.get(Account, account_id) do
+      nil ->
+        {:error, :account_not_found}
+
+      account_from_db ->
+        GenServer.start_link(__MODULE__, account_from_db, name: via_tuple(account_id))
+    end
   end
 
 
@@ -29,37 +35,37 @@ defmodule WalletServer do
   end
 
   @impl true
-  def init(account_id) do
-    account_from_db = Repo.get!(Account, account_id)
+  def init(account_from_db) do
     {:ok, account_from_db}
+
   end
 
   @impl true
-  def handle_call(:get_balance, _from, account) do
-    solde = account.balance_atomic
-    {:reply, solde, account}
+  def handle_call(:get_balance, _from, account_from_db) do
+    solde = account_from_db.balance_atomic
+    {:reply, solde, account_from_db}
   end
 
   @impl true
-  def handle_call({:credit, amount}, _from, account) do
-    {:success, updated_account} = Account.credit(account, amount)
+  def handle_call({:credit, amount}, _from, account_from_db) do
+    {:success, updated_account} = Account.credit(account_from_db, amount)
     solde = updated_account.balance_atomic
-    changeset = Account.changeset(updated_account, %{})
-    Task.start(fn -> Repo.update!(changeset) end)
-    {:reply, {:success, solde}, updated_account}
+    changeset = Account.changeset(account_from_db, %{balance_atomic: solde})
+    saved_account = Repo.update!(changeset)
+    {:reply, {:success, solde}, saved_account}
   end
 
   @impl true
-  def handle_call({:debit, amount}, _from, account) do
-    case Account.debit(account, amount) do
+  def handle_call({:debit, amount}, _from, account_from_db) do
+    case Account.debit(account_from_db, amount) do
       {:success, updated_account} ->
         solde = updated_account.balance_atomic
-        changeset = Account.changeset(updated_account, %{})
-        Task.start(fn -> Repo.update!(changeset) end)
-        {:reply, {:success, solde}, updated_account}
+        changeset = Account.changeset(account_from_db, %{balance_atomic: solde})
+        saved_account = Repo.update!(changeset)
+        {:reply, {:success, solde}, saved_account}
 
       {:error, reason} ->
-        {:reply, {:error, reason}, account}
+        {:reply, {:error, reason}, account_from_db}
     end
   end
 end

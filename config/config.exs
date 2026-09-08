@@ -9,3 +9,5 @@ config :learning, Learning.Repo,
   hostname: "localhost",
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
+
+import_config "#{Mix.env()}.exs"
