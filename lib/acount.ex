@@ -19,7 +19,7 @@ defmodule Account do
 
   end
 
-  def changeset(account, attrs) do
+  def changeset(account \\ %Account{}, attrs) do
     account
     |> cast(attrs, [:name, :phone, :balance_atomic])
     |> validate_required([:name, :phone, :balance_atomic])
