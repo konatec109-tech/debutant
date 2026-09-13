@@ -3,5 +3,6 @@ defmodule Kpay.Payment do
 
   resources do
     resource Kpay.Account
+    resource Kpay.Transaction
   end
 end

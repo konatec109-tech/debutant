@@ -1,6 +1,5 @@
 defmodule Learning.Application do
   use Application
-
   def start(_type, _args) do
     children = [
       {Registry, keys: :unique,  name: Learning.WalletRegistry},
