@@ -16,10 +16,10 @@ defmodule Kpay.Operations.Transfer do
            {:ok, _} <- set_changeset(from_account, :debit, amount),
            {:ok, _} <- set_changeset(to_account, :credit, amount) do
             changeset
-            |> Ash.Changeset.change_attribute(:amount, amount)
-            |>Ash.Changeset.change_attribute(:status, :success)
-            |> Ash.Changeset.change_attribute(:from_account_id, from_id)
-            |> Ash.Changeset.change_attribute(:to_account_id, to_id)
+            |> Ash.Changeset.force_change_attribute(:amount, amount)
+            |>Ash.Changeset.force_change_attribute(:status, :success)
+            |> Ash.Changeset.force_change_attribute(:from_account_id, from_id)
+            |> Ash.Changeset.force_change_attribute(:to_account_id, to_id)
       else
 
         {:error, error} -> normalize_error(changeset, error)

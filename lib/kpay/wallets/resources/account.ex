@@ -1,6 +1,6 @@
-defmodule Kpay.Account do
+defmodule Kpay.Wallets.Account do
   use Ash.Resource,
-  domain: Kpay.Payment,
+  domain: Kpay.Wallets,
   data_layer: AshPostgres.DataLayer
 
   postgres do
@@ -14,7 +14,7 @@ defmodule Kpay.Account do
       allow_nil? false
     end
     attribute :phone, :string do
-      allow_nil? false
+      allow_nil? true
       constraints [
         min_length: 10,
         max_length: 10,
@@ -28,11 +28,22 @@ defmodule Kpay.Account do
     end
   end
 
+  relationships do
+    belongs_to :wallet, Kpay.Wallets.Wallet do
+      allow_nil? true
+      allow_writable? true
+    end
+
+    belongs_to :bank_tenant, Kpay.Banking.BankTenant do
+      allow_nil? true
+      allow_writable? true
+    end
+  end
+
   actions do
     defaults [:read, :update]
     create :create do
-      primary? true
-      accept [:phone, :name]
+      accept [:name, :phone, :wallet_id, :bank_tenant_id]
     end
     update :debit do
       argument :amount, :integer do

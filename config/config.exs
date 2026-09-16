@@ -1,7 +1,7 @@
 import Config
 
 config :learning, ecto_repos: [Learning.Repo]
-config :learning, ash_domains: [Kpay.Payment]
+config :learning, ash_domains: [Kpay.Payment, Kpay.Banking, Kpay.Wallets]
 config :ash, default_string_length_count: :codepoints
 config :learning, ash_repos: [Learning.Repo]
 
