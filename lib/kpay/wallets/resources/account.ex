@@ -28,15 +28,19 @@ defmodule Kpay.Wallets.Account do
     end
   end
 
+  identities do
+    identity :unique_account, [:phone]
+  end
+
   relationships do
     belongs_to :wallet, Kpay.Wallets.Wallet do
       allow_nil? true
-      allow_writable? true
+      attribute_writable? true
     end
 
     belongs_to :bank_tenant, Kpay.Banking.BankTenant do
       allow_nil? true
-      allow_writable? true
+      attribute_writable? true
     end
   end
 

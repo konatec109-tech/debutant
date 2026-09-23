@@ -21,23 +21,35 @@
       "references": null,
       "scale": null,
       "size": null,
-      "source": "amount",
-      "type": "bigint"
+      "source": "name",
+      "type": "text"
     },
     {
-      "allow_nil?": false,
-      "default": "\"pending\"",
+      "allow_nil?": true,
+      "default": "nil",
       "generated?": false,
       "precision": null,
       "primary_key?": false,
       "references": null,
       "scale": null,
       "size": null,
-      "source": "status",
+      "source": "phone",
       "type": "text"
     },
     {
       "allow_nil?": false,
+      "default": "0",
+      "generated?": false,
+      "precision": null,
+      "primary_key?": false,
+      "references": null,
+      "scale": null,
+      "size": null,
+      "source": "balance",
+      "type": "bigint"
+    },
+    {
+      "allow_nil?": true,
       "default": "nil",
       "generated?": false,
       "precision": null,
@@ -57,20 +69,20 @@
           "global": null,
           "strategy": null
         },
-        "name": "pkay_transactions_from_account_id_fkey",
+        "name": "kpay_accounts_wallet_id_fkey",
         "on_delete": null,
         "on_update": null,
         "primary_key?": true,
         "schema": "public",
-        "table": "kpay_accounts"
+        "table": "kpay_wallets"
       },
       "scale": null,
       "size": null,
-      "source": "from_account_id",
+      "source": "wallet_id",
       "type": "uuid"
     },
     {
-      "allow_nil?": false,
+      "allow_nil?": true,
       "default": "nil",
       "generated?": false,
       "precision": null,
@@ -90,16 +102,16 @@
           "global": null,
           "strategy": null
         },
-        "name": "pkay_transactions_to_account_id_fkey",
+        "name": "kpay_accounts_bank_tenant_id_fkey",
         "on_delete": null,
         "on_update": null,
         "primary_key?": true,
         "schema": "public",
-        "table": "kpay_accounts"
+        "table": "kpay_bank_tenants"
       },
       "scale": null,
       "size": null,
-      "source": "to_account_id",
+      "source": "bank_tenant_id",
       "type": "uuid"
     }
   ],
@@ -109,8 +121,23 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "371BC6238A34D6884F6266A39534F03CE29AB6B98943A7DFF59A140DB62775BB",
-  "identities": [],
+  "hash": "50DBF370494BEB08FEBE467ED5FD5F76C57036B060F740EC3CE2F4501F5ED739",
+  "identities": [
+    {
+      "all_tenants?": false,
+      "base_filter": null,
+      "index_name": "kpay_accounts_unique_account_index",
+      "keys": [
+        {
+          "type": "atom",
+          "value": "phone"
+        }
+      ],
+      "name": "unique_account",
+      "nils_distinct?": true,
+      "where": null
+    }
+  ],
   "multitenancy": {
     "attribute": null,
     "global": null,
@@ -118,5 +145,5 @@
   },
   "repo": "Elixir.Learning.Repo",
   "schema": null,
-  "table": "pkay_transactions"
+  "table": "kpay_accounts"
 }

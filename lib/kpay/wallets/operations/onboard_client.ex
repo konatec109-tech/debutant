@@ -1,4 +1,4 @@
-defmodule Kpay.Wallet.Operation.OnboardClient do
+defmodule Kpay.Wallets.Operations.OnboardClient do
   use Ash.Resource.Change
 
   @impl true
@@ -7,25 +7,37 @@ defmodule Kpay.Wallet.Operation.OnboardClient do
       tenant_id = Ash.Changeset.get_argument(changeset, :bank_tenant_id)
       name = Ash.Changeset.get_argument(changeset, :name)
       phone = Ash.Changeset.get_argument(changeset, :phone)
-      changeset |> Ash.Changeset.force_change_attribute(:bank_tenant_id, tenant_id)
-
-
-
-
-
+      changeset =
+        changeset
+        |> Ash.Changeset.manage_relationship(:bank_tenant, tenant_id, type: :append_and_remove)
+      changeset(changeset, name, phone)
     end)
   end
 
-  defp changeset(changeset) do
+  defp changeset(changeset, name, phone) do
     Ash.Changeset.after_action(changeset, fn _changeset, wallet ->
       changeset =
-        Kpay.Wallet.Account
+        Kpay.Wallets.Account
         |> Ash.Changeset.for_create(:create,
         [name: name, phone: phone, wallet_id: wallet.id])
-     end)
+
+      case Ash.create(changeset) do
+        {:ok, _account} ->
+          {:ok, wallet}
+
+        {:error, account_error} ->
+          normalize_error(account_error)
+
+        reason ->
+          normalize_error(reason)
+      end
+    end)
   end
 
-  defp creating(changeset) do
-    
+  defp normalize_error(reason) when is_atom(reason), do: {:error, reason}
+  defp normalize_error(reason) do
+      IO.inspect(reason, label: "PROCESS FAILED")
+      {:error, :account_creation_failed}
   end
+
 end

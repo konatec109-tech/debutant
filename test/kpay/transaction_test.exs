@@ -1,6 +1,7 @@
 defmodule Kpay.TransactionTest do
   use Learning.DataCase, async: true
-  alias Kpay.{Account, Transaction}
+  alias Kpay.Wallets.Account
+  alias Kpay.Payment.Transaction
   test "atomic update in transaction between 2 accounts" do
     assert {:ok, ibrahim} = Ash.create(Account, %{name: "ibrahim", phone: "0704102697"})
     assert {:ok, kassim} = Ash.create(Account, %{name: "kassim", phone: "0706050403"})

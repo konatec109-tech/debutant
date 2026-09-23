@@ -11,7 +11,7 @@ defmodule Kpay.Banking.BankTenant do
   attributes do
     uuid_primary_key :id
     attribute :slug, :string, allow_nil?: false
-    attribute :status, :atom, allow_nil?: false
+    attribute :status, :atom, allow_nil?: false, default: :active, constraints: [one_of: [:active, :suspended]]
   end
 
   relationships do
@@ -21,7 +21,14 @@ defmodule Kpay.Banking.BankTenant do
     end
   end
 
+  identities do
+    identity :unique_slug, [:slug]
+  end
+
   actions do
-    defaults [:create, :read, :update]
+    defaults [:read, :update]
+    create :create do
+      accept [:slug, :bank_id]
+    end
   end
 end

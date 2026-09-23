@@ -15,22 +15,23 @@ defmodule Kpay.Wallets.Wallet do
   end
 
   relationships do
-    belongs_to :ban_tenant, Kpay.Banking.BankTenant do
+    belongs_to :bank_tenant, Kpay.Banking.BankTenant do
       allow_nil? false
-      allow_writable? true
+      attribute_writable? true
     end
+    has_many :accounts, Kpay.Wallets.Account
   end
 
-  has_many :accounts, Kpay.Wallets.Account
+
 
   actions do
-    defaults [:read, :updated]
+    defaults [:read, :update]
     create :create_client_onboarding do
       argument :name, :string, allow_nil?: false
       argument :phone, :string, allow_nil?: false
       argument :bank_tenant_id, :uuid, allow_nil?: false
 
-      change {Kpay.Operations.OnboardClient, []}
+      change {Kpay.Wallets.Operations.OnboardClient, []}
     end
   end
 end

@@ -15,7 +15,15 @@ defmodule Kpay.Banking.Bank do
     timestamps()
   end
 
+  identities do
+    identity :unique_bank, [:bic_code]
+  end
+
   actions do
-    defaults [:read, :create, :update]
+    defaults [:read, :update]
+    create :create do
+      primary? true
+      accept [:name, :bic_code]
+    end
   end
 end

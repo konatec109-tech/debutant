@@ -41,7 +41,7 @@
       "default": "nil",
       "generated?": false,
       "precision": null,
-      "primary_key?": true,
+      "primary_key?": false,
       "references": {
         "deferrable": false,
         "destination_attribute": "id",
@@ -57,7 +57,7 @@
           "global": null,
           "strategy": null
         },
-        "name": "pkay_transactions_from_account_id_fkey",
+        "name": "kpay_transactions_from_account_id_fkey",
         "on_delete": null,
         "on_update": null,
         "primary_key?": true,
@@ -74,7 +74,7 @@
       "default": "nil",
       "generated?": false,
       "precision": null,
-      "primary_key?": true,
+      "primary_key?": false,
       "references": {
         "deferrable": false,
         "destination_attribute": "id",
@@ -90,7 +90,7 @@
           "global": null,
           "strategy": null
         },
-        "name": "pkay_transactions_to_account_id_fkey",
+        "name": "kpay_transactions_to_account_id_fkey",
         "on_delete": null,
         "on_update": null,
         "primary_key?": true,
@@ -109,7 +109,7 @@
   "custom_indexes": [],
   "custom_statements": [],
   "has_create_action": true,
-  "hash": "7A0BA9FD91A4155A1A370B2393C7C83BDC0BF33B4D9EAC899D8D7229737A4F7B",
+  "hash": "F3B1D16081D68136D048825B72AC2DE82DD23B72A3EA0265D6CDE697AC642064",
   "identities": [],
   "multitenancy": {
     "attribute": null,
@@ -118,5 +118,5 @@
   },
   "repo": "Elixir.Learning.Repo",
   "schema": null,
-  "table": "pkay_transactions"
+  "table": "kpay_transactions"
 }

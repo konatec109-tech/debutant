@@ -1,5 +1,6 @@
 defmodule Kpay.Wallets do
-  use Ash.Resource
+  use Ash.Domain
+  
 
   resources do
     resource Kpay.Wallets.Wallet

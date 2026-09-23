@@ -4,7 +4,7 @@ defmodule Kpay.Transaction do
   data_layer: AshPostgres.DataLayer
 
   postgres do
-    table "pkay_transactions"
+    table "kpay_transactions"
     repo Learning.Repo
   end
 
@@ -16,12 +16,12 @@ defmodule Kpay.Transaction do
   end
 
   relationships do
-    belongs_to :from_account, Kpay.Account do
+    belongs_to :from_account, Kpay.Wallets.Account do
       allow_nil? false
       attribute_writable? true
     end
 
-    belongs_to :to_account, Kpay.Account do
+    belongs_to :to_account, Kpay.Wallets.Account do
       allow_nil? false
       attribute_writable? true
     end
